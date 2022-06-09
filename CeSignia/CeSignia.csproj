@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <EnablePreviewFeatures>True</EnablePreviewFeatures>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Silk.NET" Version="2.15.0" />
+        <PackageReference Include="Silk.NET.OpenGL.Extensions.ImGui" Version="2.15.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CeSignia.Core\CeSignia.Core.csproj" />
+        <ProjectReference Include="..\CeSignia.Engine\CeSignia.Engine.csproj" />
+        <ProjectReference Include="..\CeSignia.Graphics\CeSignia.Graphics.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Resources\**">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Resources\Settings" />
+    </ItemGroup>
+
+</Project>
