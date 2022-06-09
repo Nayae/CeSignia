@@ -3,11 +3,11 @@ using Autofac.Builder;
 
 namespace CeSignia.Core.DI;
 
-public class ApplicationDependencyBuilder
+public class ApplicationBuilder
 {
     private readonly ContainerBuilder _builder;
 
-    public ApplicationDependencyBuilder()
+    public ApplicationBuilder()
     {
         _builder = new ContainerBuilder();
     }
@@ -29,6 +29,11 @@ public class ApplicationDependencyBuilder
     public void RegisterInstance<T>(T instance) where T : class
     {
         _builder.RegisterInstance(instance);
+    }
+
+    public void RegisterModule<T>() where T : IApplicationModule, new()
+    {
+        new T().Configure(this);
     }
 
     private void ProcessRegistration<T>(
@@ -69,7 +74,7 @@ public class ApplicationDependencyBuilder
         }
     }
 
-    public IContainer Build()
+    internal IContainer Build()
     {
         return _builder.Build();
     }

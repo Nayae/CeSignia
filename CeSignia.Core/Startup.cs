@@ -1,20 +1,21 @@
 ﻿using Autofac;
 using CeSignia.Core.DI;
+using CeSignia.Core.Rendering;
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 
 namespace CeSignia.Core;
 
-public static class Startup<T> where T : IApplicationConfigurator, new()
+public static class Startup<T> where T : IApplicationSetup, new()
 {
-    private static readonly ApplicationDependencyBuilder _applicationDependencyBuilder;
-    private static readonly T _applicationStateBuilder;
+    private static readonly ApplicationBuilder _applicationBuilder;
+    private static readonly T _applicationConfigurator;
 
     static Startup()
     {
-        _applicationDependencyBuilder = new ApplicationDependencyBuilder();
-        _applicationStateBuilder = new T();
+        _applicationBuilder = new ApplicationBuilder();
+        _applicationConfigurator = new T();
     }
 
     public static void Run()
@@ -22,19 +23,18 @@ public static class Startup<T> where T : IApplicationConfigurator, new()
         var window = Window.Create(WindowOptions.Default);
         window.Load += () =>
         {
-            _applicationDependencyBuilder.RegisterInstance(window);
-            _applicationDependencyBuilder.RegisterInstance(window.CreateOpenGL());
-            _applicationDependencyBuilder.RegisterInstance(window.CreateInput());
+            _applicationBuilder.RegisterInstance(window);
+            _applicationBuilder.RegisterInstance(window.CreateOpenGL());
+            _applicationBuilder.RegisterInstance(window.CreateInput());
 
-            _applicationDependencyBuilder.RegisterType<RenderController>(DependencyScope.Singleton);
+            _applicationBuilder.RegisterType<RenderHub>(DependencyScope.Singleton);
 
-            _applicationStateBuilder.RegisterDependencies(_applicationDependencyBuilder);
+            _applicationConfigurator.Setup(_applicationBuilder);
 
-            var context = _applicationDependencyBuilder.Build();
-
-            foreach (var dependency in context.Resolve<IEnumerable<IHookApplicationLoading>>())
+            var context = _applicationBuilder.Build();
+            foreach (var component in context.Resolve<IEnumerable<IHookApplicationLoading>>())
             {
-                dependency.OnApplicationLoading();
+                component.OnApplicationLoading();
             }
         };
 

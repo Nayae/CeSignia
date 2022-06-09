@@ -10,7 +10,7 @@ internal class Program
     private static void Main()
     {
 #if DEBUG
-        Startup<EngineConfigurator>.Run();
+        Startup<EngineModule>.Run();
 #elif RELEASE
         Console.WriteLine("No startup configured for RELEASE");
 #endif
